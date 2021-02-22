@@ -215,15 +215,13 @@ def print_printer_heads_movement(start_time, server, printer_heads, output_file,
   
   return latest_timestamp
 
-def do_single_transaction(server, process_type, user, printer_heads, output_file, pid=None):
+def do_single_transaction(server, process_type, user, start_time, printer_heads, output_file, pid=None):
   '''
   Calls the start, printer_heads_movement and end printing functions
 
   Errors are exceptions so they're handled either way in the end printing func 
   '''
   try:
-    start_rand_delta = timedelta(seconds=random.randint(1, GLOBAL_VARS['start_randomness_factor']))
-    start_time = GLOBAL_VARS['start_date'] + start_rand_delta
     latest_timestamp = print_start_lines(start_time = start_time,
                                          server = server,
                                          user = user,
@@ -244,12 +242,13 @@ def do_single_transaction(server, process_type, user, printer_heads, output_file
   else:
     error = None
   finally:
-    print_end_lines(time = latest_timestamp,
+    latest_timestamp = print_end_lines(time = latest_timestamp,
                                     server = server,
                                     process_type = process_type,
                                     pid = pid,
                                     error = error,
                                     output_file=output_file)
+    return latest_timestamp                                
 
 def print_log(output_file):
   '''
@@ -258,10 +257,19 @@ def print_log(output_file):
   The transaction properties are sent across functions 
   since they're unique per transaction
   '''
+  latest_timestamp_of_server = dict()
   for i in range(GLOBAL_VARS['num_transactions']):
     server = random.choice(GLOBAL_VARS['servers_list'])
     process_type = random.choice(GLOBAL_VARS['process_type_list'])
     user = random.choice(GLOBAL_VARS['users_list'])
+
+    if server in latest_timestamp_of_server:
+      start_time = latest_timestamp_of_server[server]
+    else:
+      start_time = GLOBAL_VARS['start_date']
+
+    start_rand_delta = timedelta(seconds=random.randint(1, GLOBAL_VARS['start_randomness_factor']))
+    start_time += start_rand_delta
 
     pid = None
     if does_event_happen(GLOBAL_VARS['pid_chance']):
@@ -273,7 +281,13 @@ def print_log(output_file):
                      PrinterHead(ID = 'C', server=server, pid = pid)
                      ]
 
-    do_single_transaction(server=server, process_type=process_type, user=user, printer_heads=printer_heads, pid=pid, output_file=output_file)
+    latest_timestamp_of_server[server] = do_single_transaction(server=server,
+                                                               process_type=process_type,
+                                                               user=user,
+                                                               start_time = start_time,
+                                                               printer_heads=printer_heads,
+                                                               pid=pid,
+                                                               output_file=output_file)
 
 def parse_script_arguments():
   # Create the parser
