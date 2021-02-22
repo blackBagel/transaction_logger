@@ -54,6 +54,8 @@ DEFAULT_PROCESSES_AMOUNT = 9
 # A list of possible user values
 DEFAULT_USERS_LIST = ['Leonardo', 'Michaelangelo', 'Rafael', 'Donatello', 'Splinter', 'April', 'Casey']
   
+# The maximal possible number of seconds to decrease from the start time so that all events won't start at the same time
+DEFAULT_START_RANDOMNESS_FACTOR = 3600
 
 # General Exception Class for errors
 class PrintTransactionError(Exception):
@@ -220,7 +222,9 @@ def do_single_transaction(server, process_type, user, printer_heads, output_file
   Errors are exceptions so they're handled either way in the end printing func 
   '''
   try:
-    latest_timestamp = print_start_lines(start_time = GLOBAL_VARS['start_date'],
+    start_rand_delta = timedelta(seconds=random.randint(1, GLOBAL_VARS['start_randomness_factor']))
+    start_time = GLOBAL_VARS['start_date'] + start_rand_delta
+    latest_timestamp = print_start_lines(start_time = start_time,
                                          server = server,
                                          user = user,
                                          process_type = process_type,
@@ -353,6 +357,7 @@ def parse_script_arguments():
   GLOBAL_VARS['servers_list'] = [f'server{chr(server_ID)}' for server_ID in range(ord('A'), ord('A') + GLOBAL_VARS['servers_amount'])]
   GLOBAL_VARS['process_type_list'] = [chr(process_ID) for process_ID in range(ord('A'), ord('A') + GLOBAL_VARS['processes_amount'])]
   GLOBAL_VARS['users_list'] = DEFAULT_USERS_LIST
+  GLOBAL_VARS['start_randomness_factor'] = DEFAULT_START_RANDOMNESS_FACTOR
 
 if __name__ == '__main__':
   parse_script_arguments()
