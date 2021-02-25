@@ -145,7 +145,7 @@ def print_log_line(timestamp, server, severity, message, output_file, pid=None):
   timestamp_text = timestamp.strftime("%d/%m/%Y %T")
 
   if pid:
-    pid_text = f' pid = {pid}'
+    pid_text = f' pid={pid}'
   else:
     pid_text = ''
 
