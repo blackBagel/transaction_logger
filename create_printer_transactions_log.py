@@ -9,22 +9,22 @@ import argparse
 ####################################################################
 
 # Number of transactions to be written to the file
-DEFAULT_NUM_TRANSACTIONS = 3
+DEFAULT_NUM_TRANSACTIONS = 10
 
 # The path for the log created by the script
 DEFAULT_OUTPUT_FILE = os.path.join('./transaction.log')
 
 # Timestamp of the beggining of the log
-DEFAULT_DAYS_BACK = 2
+DEFAULT_DAYS_BACK = 1
 
 # Maximal duration of a single transaction in seconds
-DEFAULT_MAX_DURATION = 3600 * 24 
+DEFAULT_MAX_DURATION = 3600 * 2
 
 # Maximal amount of seconds between log lines
 DEFAULT_MAX_INTERVAL = 2500
 
 # 0 to 1 chance there will be a problem with the connection to the DB at the beginning of the transaction
-DEFAULT_DB_ERROR_CHANCE = 0.2
+DEFAULT_DB_ERROR_CHANCE = 0.01
 
 # 0 to 1 chance there will be an overheating error in the middle of the transaction
 DEFAULT_OVERHEAT_ERROR_CHANCE = 0.00001
@@ -37,7 +37,7 @@ DEFAULT_MIN_DURATION = 5 * 60
 
 # A list of possible server values
 # DEFAULT_SERVERS_LIST = [f'server{chr(server_ID)}' for server_ID in range(ord('A'), ord('A') + 7)]
-DEFAULT_SERVERS_AMOUNT = 7
+DEFAULT_SERVERS_AMOUNT = 10
 
 # A list of possible process type values
 # DEFAULT_PROCESS_LIST = [chr(process_ID) for process_ID in range(ord('A'), ord('L') + 1)]
